@@ -73,6 +73,7 @@ struct HomeView: View {
                 VStack(spacing: 4) {
                     Image(systemName: tab.rawValue)
                         .font(.title2)
+                        .symbolEffect(.bounce.down.byLayer, value: animatedTab.isAnimating)
                     
                     Text(tab.title)
                         .font(.caption2)
@@ -84,7 +85,18 @@ struct HomeView: View {
                 .padding(.bottom, 10)
                 .contentShape(.rect)
                 .onTapGesture {
-                    activeTab = tab
+                    withAnimation(.bouncy, completionCriteria: .logicallyComplete) {
+                        activeTab = tab
+                        animatedTab.isAnimating = true
+                    } completion: {
+                        var transaction = Transaction()
+                        transaction.disablesAnimations = true
+                        withTransaction(transaction) {
+                            animatedTab.isAnimating = nil
+                        }
+                        
+                    }
+
                 }
             }
         }
