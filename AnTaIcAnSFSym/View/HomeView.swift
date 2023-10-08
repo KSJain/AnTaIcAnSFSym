@@ -13,8 +13,11 @@ struct HomeView: View {
         return .init(tab: tab)
     }
     
+    @State private var bounceDown: Bool = true
     
     var body: some View {
+        
+        
         VStack(spacing: 0) {
             TabView(selection: $activeTab) {
                 
@@ -60,6 +63,17 @@ struct HomeView: View {
                 
             }
             
+            Picker("", selection: $bounceDown) {
+                Text("Bounces Down")
+                    .tag(true)
+                
+                Text("Bounces Up")
+                    .tag(false)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 15)
+            .padding(.bottom, 20)
+            
             CustomTabBar()
         }
     }
@@ -73,7 +87,8 @@ struct HomeView: View {
                 VStack(spacing: 4) {
                     Image(systemName: tab.rawValue)
                         .font(.title2)
-                        .symbolEffect(.bounce.down.byLayer, value: animatedTab.isAnimating)
+                        .symbolEffect(bounceDown ? .bounce.down.byLayer : .bounce.up.byLayer,
+                                      value: animatedTab.isAnimating)
                     
                     Text(tab.title)
                         .font(.caption2)
